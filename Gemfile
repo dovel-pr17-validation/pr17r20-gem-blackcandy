@@ -97,7 +97,7 @@ end
 
 group :test do
   gem "capybara", "~> 3.40.0"
-  gem "cuprite", "~> 0.14.3"
+  gem "cuprite", "~> 0.19"
   gem "minitest-mock", "~> 5.27.0"
   gem "webmock", "~> 3.25.0", require: false
   gem "simplecov", "~> 0.22.0", require: false
