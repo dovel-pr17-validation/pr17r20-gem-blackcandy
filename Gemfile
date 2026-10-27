@@ -71,7 +71,7 @@ gem "pg", "~> 1.5.9"
 gem "thruster", "~> 0.1.14", require: false
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", "~> 1.18.0", require: false
+gem "bootsnap", "~> 1.26.1", require: false
 
 group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
