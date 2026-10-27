@@ -1,0 +1,91 @@
+# frozen_string_literal: true
+
+module ApplicationHelper
+  include Pagy::Frontend
+
+  def avatar_tag(user)
+    hash = Digest::MD5.hexdigest(user.email)
+    image_tag "https://www.gravatar.com/avatar/#{hash}", class: "c-avatar"
+  end
+
+  def icon_tag(name, options = {})
+    return if name.blank?
+
+    size = options.delete(:size)
+    title = options.delete(:title)
+    is_active = options.delete(:active)
+    is_emphasis = options.delete(:emphasis)
+
+    size_class = size.blank? ? "" : "c-icon--#{size}"
+    active_class = is_active ? "c-icon--active" : ""
+    emphasis_class = is_emphasis ? "c-icon--emphasis" : ""
+    icon_class = [ "c-icon", size_class, active_class, emphasis_class, options.delete(:class) ].join(" ")
+
+    tag.svg(
+      fill: "currentColor",
+      stroke_width: "2",
+      stroke_linecap: "round",
+      stroke_linejoin: "round",
+      class: icon_class,
+      **options
+    ) do
+      tag.title(title) + tag.use("xlink:href": "##{name}")
+    end
+  end
+
+  def cover_image_url_for(object, size: :medium, default: false)
+    return unless object.respond_to?(:cover_image)
+
+    sizes_options = %i[small medium large]
+    size = size.in?(sizes_options) ? size : :medium
+    default_cover_url = "#{root_url}images/default_#{object.class.name.downcase}_#{size}.png"
+
+    return default_cover_url if default
+
+    object.has_cover_image? ? full_url_for(object.cover_image.variant(size)) : default_cover_url
+  end
+
+  def cover_image_tag(object, size: :medium, **options)
+    data_attribute = {
+      "controller" => "cover-image",
+      "cover-image-default-url-value" => cover_image_url_for(object, size: size, default: true)
+    }.merge(options.delete(:data) || {})
+
+    image_tag(
+      cover_image_url_for(object, size: size),
+      data: data_attribute,
+      **options
+    )
+  end
+
+  def loader_tag(size: "", **options)
+    size_class = size.blank? ? "" : "c-loader--#{size}"
+    loader_class = [ "o-animation-spin", "c-loader", size_class, options.delete(:class) ].compact_blank.join(" ")
+
+    tag.div class: loader_class, **options
+  end
+
+  def empty_alert_tag(has_icon: false, has_overlay: true, message: t("label.no_items"))
+    render partial: "shared/empty_alert", locals: { has_icon: has_icon, has_overlay: has_overlay, message: message }
+  end
+
+  def format_duration(sec)
+    time = Time.at(sec).utc
+    (sec > 1.hour) ? time.strftime("%T") : time.strftime("%M:%S")
+  end
+
+  def format_number(number)
+    number_to_human(number, units: { thousand: "K", million: "M", billion: "B" }, precision: 1, significant: false)
+  end
+
+  def library_pages?
+    [ library_path, albums_path, artists_path, playlists_path, songs_path ].any? { |path| current_page?(path) }
+  end
+
+  def page_title_tag(title)
+    title_suffix = " - #{t(:app_name)}"
+    title = "#{title}#{title_suffix unless native_app? || dialog?}"
+
+    content_for(:title, title)
+  end
+end

@@ -1,0 +1,21 @@
+<% page_title_tag t("label.artists") %>
+
+<div class='o-container o-container--large'>
+  <div class='o-flex o-flex--align-center o-flex--justify-between o-flex--wrap u-mb-5'>
+    <%= render "shared/library_nav" %>
+    <div class='u-ml-auto'>
+      <%= render partial: "shared/sort_select", locals: { option: @sort_option, sort_controller: controller_name, filter_sort_presenter: FilterSortPresenter.new(params) } %>
+    </div>
+  </div>
+  <% if @artists.empty? %>
+    <div class='u-mt-6'>
+      <%= empty_alert_tag has_icon: true, has_overlay: false %>
+    </div>
+  <% else %>
+    <div class='o-grid o-grid--shelf'>
+      <%= render partial: "artists/artist", collection: @artists %>
+    </div>
+
+    <%= render partial: "shared/pagination", locals: { pagy: @pagy } %>
+  <% end %>
+</div>

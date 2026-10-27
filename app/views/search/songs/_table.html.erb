@@ -1,0 +1,14 @@
+<table class='c-table' data-controller='songs bridge--songs'>
+  <thead>
+    <tr>
+      <th><%= t("field.name") %></th>
+      <th class='u-display-none@medium'><%= t("label.artist") %></th>
+      <th class='u-display-none@medium'><%= t("label.album") %></th>
+      <th class='u-display-none@small'><%= t("label.duration") %></th>
+      <th><%= t("label.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: "songs/song", collection: songs %>
+  </tbody>
+</table>

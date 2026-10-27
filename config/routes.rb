@@ -1,0 +1,104 @@
+Rails.application.routes.draw do
+  root "home#index"
+
+  resources :sessions, only: [ :index, :new, :create, :destroy ]
+
+  resource :setting, only: [ :show ] do
+    scope module: :settings do
+      resource :appearance, only: [ :show ]
+      resource :library, only: [ :show, :update ]
+      resource :integration, only: [ :show, :update ]
+      resource :transcoding, only: [ :show, :update ]
+    end
+  end
+
+  resource :system, only: [ :show ]
+
+  resource :library, only: [ :show ]
+  resources :artists, only: [ :index, :show, :edit, :update ]
+  resources :songs, only: [ :index, :show, :edit, :update ] do
+    resource :lyrics, only: [ :show ], module: :songs
+  end
+  resources :albums, only: [ :index, :show, :edit, :update ]
+
+  resources :users, except: [ :show ] do
+    resource :setting, only: [ :update ], module: "users"
+  end
+
+  resources :playlists, only: [ :index, :new, :create, :edit, :update, :destroy ] do
+    resources :songs, only: [ :index, :create, :destroy ], module: "playlists" do
+      delete "/", action: :destroy_all, on: :collection
+      put "move", on: :member
+    end
+  end
+
+  namespace :playlists do
+    resources :selections, only: :index
+  end
+
+  namespace :current_playlist do
+    resources :songs, only: [ :index, :create, :destroy ] do
+      put "move", on: :member
+
+      collection do
+        delete "/", action: :destroy_all
+        resources :albums, only: :update, module: :songs
+        resources :playlists, only: :update, module: :songs
+      end
+    end
+  end
+
+  namespace :favorite_playlist do
+    resources :songs, only: [ :index, :create, :destroy ] do
+      delete "/", action: :destroy_all, on: :collection
+      put "move", on: :member
+    end
+  end
+
+  get "/search", to: "search#index", as: "search"
+
+  namespace :search do
+    resources :artists, only: [ :index ]
+    resources :songs, only: [ :index ]
+    resources :albums, only: [ :index ]
+    resources :playlists, only: [ :index ]
+  end
+
+  namespace :albums do
+    namespace :filter do
+      resources :genres, only: [ :index ]
+      resources :years, only: [ :index ]
+    end
+  end
+
+  namespace :songs do
+    namespace :filter do
+      resources :genres, only: [ :index ]
+      resources :years, only: [ :index ]
+    end
+  end
+
+  namespace :my do
+    resource :session, only: [ :destroy ]
+    resource :profile, only: [ :edit, :update ]
+    resources :recently_played, only: [ :index ]
+  end
+
+  resources :stream, only: [ :new ]
+  resources :transcoded_stream, only: [ :new ]
+
+  resource :media_syncing, only: [ :create ]
+
+  resource :about, only: [ :show ]
+
+  get "/403", to: "errors#forbidden", as: :forbidden
+  get "/404", to: "errors#not_found", as: :not_found
+  get "/422", to: "errors#unprocessable_entity", as: :unprocessable_entity
+  get "/500", to: "errors#internal_server_error", as: :internal_server_error
+
+  get "up", to: "rails/health#show", as: :rails_health_check
+
+  # Render dynamic PWA files from app/views/pwa/*
+  get "service-worker", to: "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest
+end

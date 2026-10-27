@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+class MediaSyncingController < ApplicationController
+  before_action :require_admin
+
+  def create
+    if Media.syncing?
+      flash[:alert] = t("error.syncing_in_progress")
+      redirect_to setting_library_path
+    else
+      MediaSyncAllJob.perform_later(full: params[:full].present?)
+    end
+  end
+end

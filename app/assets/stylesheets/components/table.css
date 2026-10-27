@@ -1,0 +1,41 @@
+@layer components {
+  .c-table {
+    width: 100%;
+    text-align: left;
+  }
+
+  .c-table th,
+  .c-table td {
+    padding: var(--spacing-2);
+    text-align: left;
+    vertical-align: middle;
+    color: var(--table-color);
+  }
+
+  .c-table th {
+    font-weight: bold;
+  }
+
+  .c-table td {
+    border-top: 1px solid var(--table-border-color);
+  }
+
+  .c-table tbody tr:hover > td {
+    background-color: var(--table-hover-bg-color);
+    border-top-color: transparent;
+
+    &:first-child {
+      border-top-left-radius: var(--border-radius-3);
+      border-bottom-left-radius: var(--border-radius-3);
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--border-radius-3);
+      border-bottom-right-radius: var(--border-radius-3);
+    }
+  }
+
+  .c-table tbody tr:hover + tr > td {
+    border-top-color: transparent;
+  }
+}

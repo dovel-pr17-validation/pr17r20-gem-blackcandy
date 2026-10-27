@@ -1,0 +1,27 @@
+<nav>
+  <ul class='c-tab c-tab--vertical c-tab--secondary'>
+    <li class='c-tab__item <%= "is-active" if current_page?(setting_appearance_path) %>'>
+      <%= link_to t("label.appearance"), setting_appearance_path %>
+    </li>
+    <li class='c-tab__item <%= "is-active" if current_page?(edit_my_profile_path) %>'>
+      <%= link_to t("label.profile"), edit_my_profile_path %>
+    </li>
+    <% if is_admin? %>
+      <li class='c-tab__item <%= "is-active" if current_page?(setting_library_path) %>'>
+        <%= link_to t("label.library"), setting_library_path %>
+      </li>
+      <li class='c-tab__item <%= "is-active" if current_page?(setting_integration_path) %>'>
+        <%= link_to t("label.integration"), setting_integration_path %>
+      </li>
+      <li class='c-tab__item <%= "is-active" if current_page?(setting_transcoding_path) %>'>
+        <%= link_to t("label.transcoding"), setting_transcoding_path %>
+      </li>
+      <li class='c-tab__item <%= "is-active" if current_page?(users_path) %>'>
+        <%= link_to t("label.users"), users_path %>
+      </li>
+      <li class='c-tab__item <%= "is-active" if current_page?(sessions_path) %>'>
+        <%= link_to t("label.sessions"), sessions_path %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

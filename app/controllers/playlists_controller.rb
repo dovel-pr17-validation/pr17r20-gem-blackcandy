@@ -1,0 +1,84 @@
+# frozen_string_literal: true
+
+class PlaylistsController < ApplicationController
+  render_in_dialog only: [ :new, :edit ]
+
+  before_action :find_playlist, only: [ :edit, :destroy, :update ]
+  before_action :find_song, only: [ :create ]
+  before_action :get_sort_option, only: [ :index ]
+
+  def index
+    records = Current.user.playlists_with_favorite
+      .includes(:playlists_songs)
+      .favorite_first
+      .sort_records(*sort_params)
+
+    @pagy, @playlists = pagy(records)
+  end
+
+  def new
+    @playlist = Playlist.new
+  end
+
+  def edit
+  end
+
+  def create
+    Playlist.transaction do
+      @playlist = Current.user.playlists.create!(playlist_params)
+      @playlist.songs.push(@song) if @song
+    end
+
+    respond_to do |format|
+      format.html do
+        if @song
+          redirect_to playlist_songs_path(@playlist), notice: t("notice.added_to_playlist")
+        else
+          redirect_to action: "index", notice: t("notice.created")
+        end
+      end
+
+      format.json { render partial: "playlists/playlist", locals: { playlist: @playlist }, status: :created }
+    end
+  end
+
+  def update
+    @playlist.update!(playlist_params)
+
+    respond_to do |format|
+      format.html { redirect_to playlist_songs_path(@playlist), notice: t("notice.updated") }
+      format.json { render partial: "playlists/playlist", locals: { playlist: @playlist } }
+    end
+  end
+
+  def destroy
+    @playlist.destroy
+
+    respond_to do |format|
+      format.html { redirect_to action: "index" }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+
+  def find_playlist
+    @playlist = Current.user.playlists.find(params[:id])
+  end
+
+  def find_song
+    @song = Song.find(params[:song_id]) if params[:song_id].present?
+  end
+
+  def playlist_params
+    params.require(:playlist).permit(:name, :cover_image)
+  end
+
+  def sort_params
+    [ params[:sort], params[:sort_direction] ]
+  end
+
+  def get_sort_option
+    @sort_option = Playlist::SORT_OPTION
+  end
+end

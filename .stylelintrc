@@ -1,0 +1,21 @@
+{
+  "extends": "stylelint-config-standard",
+  "plugins": ["@stylistic/stylelint-plugin"],
+  "rules": {
+    "selector-class-pattern": null,
+    "custom-property-empty-line-before": null,
+    "at-rule-empty-line-before": null,
+    "value-keyword-case": ["lower", { "ignoreKeywords": ["BlinkMacSystemFont"] }],
+    "keyframes-name-pattern": null,
+    "property-no-vendor-prefix": null,
+    "color-function-notation": "modern",
+    "alpha-value-notation": "number",
+    "value-no-vendor-prefix": null,
+    "declaration-block-single-line-max-declarations": null,
+    "media-feature-range-notation": null,
+    "selector-not-notation": null,
+    "no-descending-specificity": null,
+    "import-notation": null,
+    "@stylistic/indentation": 2
+  }
+}

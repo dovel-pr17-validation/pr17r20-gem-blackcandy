@@ -1,0 +1,20 @@
+@layer components {
+  .c-search {
+    width: 200px;
+    border-radius: var(--border-radius-4);
+  }
+
+  .c-search .c-loader {
+    visibility: hidden;
+  }
+
+  .c-search.is-loading .c-loader {
+    visibility: visible;
+  }
+
+  @media (max-width: 930px) {
+    .c-search {
+      width: 160px;
+    }
+  }
+}
