@@ -90,7 +90,7 @@ group :development do
   # Memory profiler for ruby
   gem "memory_profiler", "~> 1.1.0", require: false
   # Help to kill N+1 queries and unused eager loading
-  gem "bullet", "~> 8.1.0"
+  gem "bullet", "~> 8.3.1"
   # For deployment
   gem "kamal", "~> 2.7.0", require: false
 end
